@@ -1,5 +1,5 @@
 {
-    "plugins": [ "theme-api" ],
+    "plugins": [ "theme-api", "toggle-chapters"],
     "pluginsConfig": {
         "theme-api": {
             "languages": [

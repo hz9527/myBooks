@@ -22,6 +22,13 @@
 
 ## 后端
   * [nodejs](./books/nodejs/index.md)
+    * [基础知识](./books/nodejs/base.md)  
+    * [数据流与文件系统](./books/nodejs/file.md)
+    * [网络处理](./books/nodejs/net.md)  
+    * [进程处理](./books/nodejs/process.md)  
+    * [错误与调试](./books/nodejs/error.md)  
+    * [其他](./books/nodejs/other.md)  
+    * [数据库处理](./books/nodejs/database.md)
   * [mongodb](./books/mongo/index.md)
 
 ## 其他
