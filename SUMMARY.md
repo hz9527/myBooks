@@ -12,6 +12,10 @@
 
 ## 前端框架
   * [vue全家桶](./books/vue/index.md)
+    * [vue](./books/vue/vue.md)
+    * [vueRouter](./books/vue/vuerouter.md)
+    * [vuex](./books/vue/vuex.md)
+    * [vueTouch](./books/vue/vuetouch.md)
   * [vue ssr](./books/vue_ssr/index.md)
   * [react](./books/react/index.md)
 
