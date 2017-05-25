@@ -107,3 +107,27 @@ timer2.unref() // can\t unref
 setTimeout(() => {
 }, 1000)
 ```
+### 其他全局变量
+除了上述的timer console外，node还提供了  
+global __filename __dirname require Buffer module exports process 等全局变量
+
+#### __filename __diname
+两者返回结果都是绝对路径，严格来说这两货不是全局变量，是当前模块内置常量
+
+```JavaScript
+console.log(__filename, __dirname)
+// /Users/**/**/myDemo/nodetest/filename.js /Users/**/**/myDemo/nodetest
+```
+#### exports module
+详见module
+
+### module
+#### 导出模块有两种方式
+1. module.exports = {}
+2. 类似es6，export（类似接口）将方法与属性挂载在exports下 exports.say = function () {}
+
+#### 访问主模块
+在模块内require.main === module及main指向自己，因此被require就为false，通过这个原理我们入手一个应用可以很快找到一个入口文件
+require.main.filename
+
+#### 
