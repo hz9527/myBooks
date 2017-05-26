@@ -146,11 +146,62 @@ vue为开发者提供了transition及transition-group 标签
 transition使用场景是整体的show或hide（如vif velse）但每次只会出现一个根元素并整体替换，而group场景则是局部替换，比如列表的插入，排序，移除动效  
 transition-group自带flip队列动画，并提供额外的name-move钩子意味着transition钩子一样，move钩子主要用于排序移动动效
 
+> 讲到着，还有一个问题关于渲染内置组件问题，比如router－link默认渲染成a标签可以通过tag属性更改。transition及transition－group默认不渲染，也可以指定tag
+
 ### 动画
+和transition不一样，动画主要原理是通过watch一个变化然后异步更改，可能需要反复调用
 
 ## 关于自定义
+vue扩展性还是非常不错的，可以通过自定义标签来封装组件，可以通过自定义指令来扩展指令，还可以自定义过滤器等
 ### 自定义标签
+1) vue.extend
+使用基础 Vue 构造器，创建一个“子类”。参数是一个包含组件选项的对象(组件)。  
+2) vue.component
+注册一个全局组件，其实就是实例化并分配一个id的vue‘子类’  
+```JavaScript
+// 注册组件，传入一个扩展过的构造器
+Vue.component('my-component', Vue.extend({ /* ... */ }))
+// 注册组件，传入一个选项对象（自动调用 Vue.extend）
+Vue.component('my-component', { /* ... */ })
+```
+
 ### 自定义指令
+自定义指令其实不论是动态绑定值还是事件其实对于调用者都一样，因为函数也是一种对象  
+1）Vue.directive  
+2) directives  
+类似filter都支持全局与局部的记的加s  
+可以想象如果支持@，vue将无法知道这个是一个自定义指令还是监听一个事件（子组件），因此自定义指令只能使用v-name
+```JavaScript
+Vue.directive('test', {
+  bind () {}, // 组件创建时钩子
+  inserted () {}, // 被绑定元素插入到父组件时调用
+  update () {}, // 所在模版更新时调用
+  componentUpdated () {}, // 所在模版更新完成时
+  unbind () {} // 组件销毁时调用
+})
+```
+在一个组件声明周期内update，componentUpdated钩子会反复调用其他不会，接下来我们看看参数列表
+```JavaScript
+[
+  el,
+  {
+    def: {bind...}, // 该指令绑定的钩子
+    expression: String, // 指令字符串表达式，如v-demo='test + 1' test ＋ 1
+    modifiers: {}, // 参数，如v-demo.sync.once = 'click' {sync: true, once: true}
+    name: String, // 指令名 demo
+    rawName: String, // 指令绑定名，v-demo
+    value: '' // 指令值的真实值，如v-demo='test + 1' test : 2 -> 3 test fn -> fn
+  },
+  vnode,
+  oldVnode // 看了前面应该知道，这个只有在update和componentUpdated有
+]
+```
+> 大致看了下，组件被销毁vue会帮你移除事件，具体没考证，demo表现大致如此，而且不论如何绑定事件this不会丢失
+
+建议：
+1. 可以考虑使用指令参数
+2. 绑定事件做好直接使用obj.value，方便手动移除
+
 ### mixin
 
 ## 关于插件
