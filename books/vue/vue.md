@@ -41,10 +41,74 @@
 其实我们平时常用的指令只有那么一些:class :style @xx :html v-for v-show v-if，但是vue提供的指令远远不止这些，而且指令还可以有修饰符  
 1. disabled 适用于大多表单元素
 2. text 和双括号效果一致
-3. else-if
-4.
+3. else-if 配合v-if使用
+4. pre vue将跳过该标签编译，如一些写死的部分可以是使用，能提升编译及vnode计算速度
+5. cloak 这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，可以隐藏未编译的 Mustache 标签直到实例准备完毕。
+6. once 仅第一次编译，随后的重新渲染,元素/组件及其所有的子节点将被视为静态内容并跳过。这可以用于优化更新性能。
+
+#### 修饰符
+1）v-on
+* stop停止冒泡
+* prevent阻止默认事件可以没有事件，只是单纯阻止默认事件
+* capture在捕获阶段触发
+* self只有target为绑定元素才触发
+* {keyCode | keyAlias}事件为特定键触发
+* native原生事件
+* once仅绑定一次
+* left right middle鼠标左右中键触发
+* passive [mdn](https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener)
+
+```JavaScript
+<div @click.stop.right='click("type", $event)'>click</div>
+
+<form @submit.prevent='submit'></form>
+
+<input @keydown.13='keydown'/>
+<input @keydown.enter='keydown'/>
+
+<my-omponent @click.native='click' />
+```
+可以链式使用修饰符，在部分上可以不用表达式，如阻止默认事件，在组建上可以区分dom事件与组件事件(默认都是监听组件事件)
+关于passive  
+简单来说默认事件都会等待绑定事件执行完确认里面没有preventDefault才会执行，这显然会使得这种等待没太多意义，所以可以定义默认事件不必等待绑定事件，具体参考上述文章
+
+2）v-model
+* lazy 将input事件改为change事件
+* number 输入数字改为字符串
+* trim 过滤空格
 
 ### 关于实例化
+在实例化一个Vue时，我们更多的是直接用模版，那么那些配置到底是如何配置的？
+```JavaScript
+new Vue({
+  el: '#app',
+  router,
+  vuex,
+  template: '<App/>',
+  components: {App}
+})
+```
+其实实例化vue并挂载到页面中和我们写组件一模一样，只是多了一个挂载项  
+> 在实例化 Vue 时，需要传入一个选项对象，它可以包含数据、模板、挂载元素、方法、生命周期钩子等选项
+
+只是平时用loader习惯了，没有意识到template。这个是在入口文件写的即.js而不是.vue文件  
+其实还可以将template与components合并
+```JavaScript
+new Vue({
+  el: '#app',
+  router,
+  vuex,
+  render: (createElement) => createElement(App)
+})
+
+new Vue({
+  router,
+  template: '<App />',
+  components: {App}
+}).$mount('#app')
+```
+当然我们还可以为这个入口vue添加钩子等
+
 ### 关于实例配置项
 
 ## 动画与过渡
