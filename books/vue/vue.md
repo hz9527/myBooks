@@ -112,7 +112,40 @@ new Vue({
 ### 关于实例配置项
 
 ## 动画与过渡
+vue是一款轻量级mvvm框架，轻到使用vue做动画都很流畅，下面介绍两种，过渡与动画
 ### 过渡
+vue为开发者提供了transition及transition-group 标签  
+两者区别在于前者需要一个根标签包裹，后者则不需要  
+标签提供了name属性，以供class变化使用  
+整个流程可以理解为(以transition为 :chestnut:)
+> enter: append dom or display:block --->  name-enter -> name-enter-active   
+> leave: name-leave-active -> name-leave  ---> remove dom or display:none
+> display: none -> name-enter(time-stamp) ---> name-enter-active(transition) --- root class --- name-leave-active(transition) --- name-leave
+
+整个过程name-enter-active与root class瞬间切换，name-leave-active与root class瞬间切换，而为了将rootcalss与transition钩子分开，
+**所以进入初始化样式给name-enter，离开初始化样式给name-leave-active，过渡逻辑交给两个active**  
+另外根元素vshow或vif变化都能引发transition class变化  
+当然transition还提供了js钩子，以事件形式体现
+```JavaScript
+<transition
+  v-on:before-enter="beforeEnter"
+  v-on:enter="enter"
+  v-on:after-enter="afterEnter"
+  v-on:enter-cancelled="enterCancelled"
+  v-on:before-leave="beforeLeave"
+  v-on:leave="leave"
+  v-on:after-leave="afterLeave"
+  v-on:leave-cancelled="leaveCancelled"
+>
+  <!-- ... -->
+</transition>
+```
+> 当有相同标签名的元素切换时，需要通过 key 特性设置唯一的值来标记以让 Vue 区分它们，否则 Vue 为了效率只会替换相同标签内部的内容。即使在技术上没有必要，给在 <transition> 组件中的多个元素设置 key 是一个更好的实践。
+
+#### transition-group
+transition使用场景是整体的show或hide（如vif velse）但每次只会出现一个根元素并整体替换，而group场景则是局部替换，比如列表的插入，排序，移除动效  
+transition-group自带flip队列动画，并提供额外的name-move钩子意味着transition钩子一样，move钩子主要用于排序移动动效
+
 ### 动画
 
 ## 关于自定义
