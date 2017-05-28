@@ -1,5 +1,12 @@
 ## 基础知识
-
+目录：
+[交互运行环境REPL](#交互运行环境REPL)  
+[console](#console)  
+[timer定时器](#timer定时器)  
+[其他全局变量](#其他全局变量)  
+[module](#module)  
+[事件循环机制](#事件循环机制)  
+[调试](#调试)  
 
 ### 交互运行环境REPL
 其实就是类似与浏览器中控制台，能够直接在终端中运行js代码，并返回结果  
@@ -245,3 +252,123 @@ setTimeout(() => {
 5. module.loaded 模块是否已经加载完成，或正在加载中。
 6. module.parent 最先引用该模块的模块
 7. module.require(id) 提供了一种类似 require() 从原始模块被调用的加载模块的方式
+
+### 事件循环机制
+我们知道node最大特点是非阻塞IO，而之所以能实现，依赖于node提供的事件循环（libuv层），而事件循环主要依赖于异步和事件监听  
+咋一看我们会认为事件是同步的，因为触发了就马上同步执行监听函数，其实不然。试想以下两种场景  
+1）浏览器  
+此时js脚本正在处理一些东西，而此时我点击了某个监听了click事件的dom，那么这个click回调是立即执行吗？  
+显然不是，这个回调会被放到一个队列中（task或者microTask）直到执行栈空了就会去执行这个队列  
+2）node  
+此时js正在处理一些东西，此时有一个用户发送了一个请求。那么node会直接退出当前执行而直接去响应这个请求吗？  
+显然不是  
+3）自定义订阅发布  
+好吧，我承认一旦task执行了，事件回调会被同步执行，自定义订阅发布也是这样，一旦发布会同步执行订阅函数，从一定角度来说自定义的订阅发布和原生事件是有本质区别的  
+因为自定义订阅发布不会被塞到一个task去等待，而是立即执行，当然自定义订阅发布也没有这个能力
+> 显然，nodejs的事件并不是自定义的订阅发布，否则事件就没有意义了，因为我们希望的事件具备被放置在task中等待当前执行完毕再塞入执行栈的能力  
+
+#### node中事件模块
+node中提供的这种会被塞到task事件全部继承于events核心模块  
+```JavaScript
+const EventEmitter = require('events');
+
+class MyEmitter extends EventEmitter {}
+
+const myEmitter = new MyEmitter();
+myEmitter.on('event', () => {
+  console.log('发生了一个事件！');
+});
+myEmitter.emit('event');
+```
+#### events添加监听
+1. on
+2. once
+3. addListener
+```JavaScript
+var EventEmitter = reuire('events')
+class MyEmitter extends EventEmitter {}
+myEmitter = new MyEmitter()
+
+myEmitter.on(eventName, callBack)
+myEmitter.once(eventName, callBack)
+myEmitter.addListener(eventName, callBack)
+```
+
+#### events主动触发事件
+```JavaScript
+...
+myEmitter.emit(eventName, arg) // 和vue很像
+```
+
+#### events错误事件处理
+我们直到node是单线程，这个其实有一个很大的问题，一旦代码在某个地方报错就可能阻塞并退出进程，所以这需要开发者将代码组织得足够健壮使得这种阻塞降到最低  
+> 当 EventEmitter 实例中发生错误时，会触发一个 'error' 事件。 这在 Node.js 中是特殊情况。
+如果 EventEmitter 没有为 'error' 事件注册至少一个监听器，则当 'error' 事件触发时，会抛出错误、打印堆栈跟踪、且退出 Node.js 进程。
+为了防止 Node.js 进程崩溃，可以在 process 对象的 uncaughtException 事件上注册监听器，或使用 domain 模块。 （注意，domain 模块已被废弃）
+
+所以我们还可以为进程注册一个uncaughtException事件监听，以防止阻塞产生
+```JavaScript
+...
+const myEmitter = new MyEmitter();
+process.on('uncaughtException', (err) => {
+  console.error('有错误');
+});
+myEmitter.emit('error', new Error('whoops!')); // 打印: 有错误
+```
+
+#### events事件
+这是个啥？  
+试想，假如我们绑定一个事件或者解绑一个事件是不是应该告诉我们一声？  
+对，events核心模块就是这么强，给我提供了绑定与解绑事件  
+**node 为我们提供了newListener 与 removeListener事件来监听事件绑定与移除** 参数都是eventName listener（callBack）
+```JavaScript
+const myEmitter = new MyEmitter();
+// 只处理一次，所以不会无限循环
+myEmitter.once('newListener', (event, listener) => {
+  if (event === 'event') {
+    // 在开头插入一个新的监听器
+    myEmitter.on('event', () => {
+      console.log('B');
+    });
+  }
+});
+myEmitter.on('event', () => {
+  console.log('A');
+});
+myEmitter.emit('event');
+// 打印:
+//   B
+//   A
+```
+
+#### events移除监听
+我想你大概已经知道怎么移除事件了
+1. myEmitter.removeListener(eventName, listener)
+2. myEmitter.removeAllListeners([eventName]) 没有参数表示移除所有事件的所有监听
+
+#### 事件实例的其他方法
+我们刚刚讲到事件添加，移除监听的方法，其实events模块给我提供的实例方法远不止这些  
+1. emitter.eventNames()
+  * 返回事件管理实例监听的所有事件名数组，如[ 'foo', 'bar', Symbol(symbol) ]
+2. emitter.getMaxListeners()
+  * 返回事件管理实例监听器最大数量（为了防止内存溢出，开发者需要尽量减少不必要的监听器）
+3. emitter.listenerCount(eventName)
+  * 返回事件管理实例某个事件的监听函数数量
+4. emitter.listeners(eventName)
+  * 返回事件管理实例某个事件的监听函数组成的数组
+5. emitter.setMaxListeners(n)
+  * 设置事件管理实例能监听的函数数量，默认为10
+6. emitter.prependListener(eventName, listener)
+  * 将事件添加到事件的第一个（正常添加监听是最后执行，这样添加将第一个执行），注，这种添加方式不会检查该listener是否已经添加过，也就意味着一个listener可能执行多次
+7. emitter.prependOnceListener(eventName, listener)
+  * 看上面，自己体会吧。对了，参数列表不再有emit提供，而是事件管理实例
+
+```JavaScript
+...
+myEmitter.prependListener('test', (stream) => {
+})
+```
+EventEmitter.defaultMaxListeners你懂的
+
+
+### 调试
