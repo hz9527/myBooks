@@ -109,9 +109,9 @@ setTimeout(() => {
 ```
 ### 其他全局变量
 除了上述的timer console外，node还提供了  
-global __filename __dirname require Buffer module exports process 等全局变量
+global \__filename \__dirname require Buffer module exports process 等全局变量
 
-#### __filename __diname
+#### \__filename \__diname
 两者返回结果都是绝对路径，严格来说这两货不是全局变量，是当前模块内置常量
 
 ```JavaScript
@@ -124,10 +124,124 @@ console.log(__filename, __dirname)
 ### module
 #### 导出模块有两种方式
 1. module.exports = {}
-2. 类似es6，export（类似接口）将方法与属性挂载在exports下 exports.say = function () {}
+2. 类似es6，export（类似接口）将方法与属性挂载在exports下 exports.say = function () {} (注：这种方式只能在模块内访问)
 
 #### 访问主模块
 在模块内require.main === module及main指向自己，因此被require就为false，通过这个原理我们入手一个应用可以很快找到一个入口文件
 require.main.filename
 
-#### 
+#### 模块缓存
+1）模块第一次被依赖后会缓存在全局的exports对象下，再次被依赖就直接取缓存  
+试想这个场景，我们在导出一个mock接口，本来整个模块是动态的，但是当我们再次访问发现还是那样，因为已经将其返回（结果）缓存了  
+
+2）模块的缓存是基于文件名（id）  
+我们在不同文件中require同一个模块可能路径不同，node又是如何知道的呢？这得益于node缓存模块是以其绝对路径作为标识符，这也意味着在一些不区分字母大小写系统中可能存在问题，比如造成多次加载
+
+#### 模块管理原理
+1） 文件依赖  
+1. 如果依赖（require内内容）以./ / ../ 开头，会根据路径查找
+2. 如果依赖末端是一个文件则作为js（json node）加载
+3. 如果依赖末端是不是一个文件则尝试将其作为文件，如果依旧未找到则将其转为目录查找，如果该目录下存在package中main指向再寻找index.js(json node)则加载该index
+
+2） 目录依赖  
+1. 如果依赖不以路径开头则会从当前路径下寻找node_modules中寻找，若为找到一直会找到跟目录的node_modules（当然对于核心模块或全局模块有相应优化）
+3. 类似文件依赖，先作为文件加载，再作为目录加载，优先寻找其package中main指向
+
+整个过程转为程序表达大致如下：
+```
+从 Y 路径的模块 require(X)
+1. 如果 X 是一个核心模块，
+   a. 返回核心模块
+   b. 结束
+2. 如果 X 是以 '/' 开头
+   a. 设 Y 为文件系统根目录
+3. 如果 X 是以 './' 或 '/' 或 '../' 开头
+   a. 加载文件(Y + X)
+   b. 加载目录(Y + X)
+4. 加载Node模块(X, dirname(Y))
+5. 抛出 "未找到"
+
+加载文件(X)
+1. 如果 X 是一个文件，加载 X 作为 JavaScript 文本。结束
+2. 如果 X.js 是一个文件，加载 X.js 作为 JavaScript 文本。结束
+3. 如果 X.json 是一个文件，解析 X.json 成一个 JavaScript 对象。结束
+4. 如果 X.node 是一个文件，加载 X.node 作为二进制插件。结束
+
+加载索引(X)
+1. 如果 X/index.js 是一个文件，加载 X/index.js 作为 JavaScript 文本。结束
+3. 如果 X/index.json  是一个文件，解析 X/index.json 成一个 JavaScript 对象。结束
+4. 如果 X/index.node 是一个文件，加载 X/index.node 作为二进制插件。结束
+
+加载目录(X)
+1. 如果 X/package.json 是一个文件，
+   a. 解析 X/package.json，查找 "main" 字段
+   b. let M = X + (json main 字段)
+   c. 加载文件(M)
+   d. 加载索引(M)
+2. 加载索引(X)
+
+加载Node模块(X, START)
+1. let DIRS=NODE_MODULES_PATHS(START)
+2. for each DIR in DIRS:
+   a. 加载文件(DIR/X)
+   b. 加载目录(DIR/X)
+
+NODE_MODULES_PATHS(START)
+1. let PARTS = path split(START)
+2. let I = count of PARTS - 1
+3. let DIRS = []
+4. while I >= 0,
+   a. if PARTS[I] = "node_modules" CONTINUE
+   b. DIR = path join(PARTS[0 .. I] + "node_modules")
+   c. DIRS = DIRS + DIR
+   d. let I = I - 1
+5. return DIRS
+```
+总结如下：
+1. 核心模块
+2. 作为路径加载
+3. 作为模块加载
+
+加载优先级如下：
+1. 作为文件加载（js json node）
+2. 加载目录－》package main －》 index
+
+#### 模块管理技巧
+1. 注意循环依赖中顺序
+2. 导出需要同步，代码可以异步
+3. 建议使用_而不是驼峰命名
+
+如：模块a引用模块b，b模块也引用a，但是需要a加载完b才能执行，而index则同时引用了a，b。因此注意在index对a，b的引用顺序  
+如：
+```JavaScript
+var a = {
+  b: null
+}
+setTimeout(() => {
+  a.b = 10
+  module.exports = a // fail
+}, 100)
+
+module.exports = a // success
+setTimeout(() => {
+  a.b = 10
+}, 100)
+```
+
+#### 模块底层原理
+```JavaScript
+(function (exports, require, module, __filename, __dirname) {
+// 你的模块代码实际上在这里
+});
+```
+
+#### 关于module对象
+> 在每个模块中，module 的自由变量是一个指向表示当前模块的对象的引用。 为了方便，module.exports 也可以通过全局模块的 exports 对象访问。 module 实际上不是全局的，而是每个模块本地的。
+
+1. module.children 被该模块引用的模块对象。
+2. module.exports 对象是由模块系统创建的用于导出模块
+3. module.filename 模块的完全解析后的文件名
+4. module.id 模块的标识符。 通常是完全解析后的文件名
+5. module.loaded 模块是否已经加载完成，或正在加载中。
+6. module.parent 最先引用该模块的模块
+7. module.require(id) 提供了一种类似 require() 从原始模块被调用的加载模块的方式

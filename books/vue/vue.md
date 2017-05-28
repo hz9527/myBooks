@@ -122,7 +122,7 @@ vue为开发者提供了transition及transition-group 标签
 > leave: name-leave-active -> name-leave  ---> remove dom or display:none
 > display: none -> name-enter(time-stamp) ---> name-enter-active(transition) --- root class --- name-leave-active(transition) --- name-leave
 
-整个过程name-enter-active与root class瞬间切换，name-leave-active与root class瞬间切换，而为了将rootcalss与transition钩子分开，
+整个过程name-enter-active与root class瞬间切换，name-leave-active与root class瞬间切换，而为了将rootcalss与transition钩子分开，  
 **所以进入初始化样式给name-enter，离开初始化样式给name-leave-active，过渡逻辑交给两个active**  
 另外根元素vshow或vif变化都能引发transition class变化  
 当然transition还提供了js钩子，以事件形式体现
@@ -154,9 +154,9 @@ transition-group自带flip队列动画，并提供额外的name-move钩子意味
 ## 关于自定义
 vue扩展性还是非常不错的，可以通过自定义标签来封装组件，可以通过自定义指令来扩展指令，还可以自定义过滤器等
 ### 自定义标签
-1) vue.extend
+1) vue.extend  
 使用基础 Vue 构造器，创建一个“子类”。参数是一个包含组件选项的对象(组件)。  
-2) vue.component
+2) vue.component  
 注册一个全局组件，其实就是实例化并分配一个id的vue‘子类’  
 ```JavaScript
 // 注册组件，传入一个扩展过的构造器
@@ -203,5 +203,43 @@ Vue.directive('test', {
 2. 绑定事件做好直接使用obj.value，方便手动移除
 
 ### mixin
-
+类似class的extends，官方不推荐使用，不过目测挺适合做单测
 ## 关于插件
+插件通常能为vue添加一些全局方法。一般分以下几种：
+1. 添加全局方法或者属性，如vue－element
+2. 添加全局资源，如指令，过滤器，组件等，如vue－touch
+3. 通过全局mixin添加一些组件选项，如vuex
+4. 添加vue实例方法，通过原型实现，如vue－resource
+5. 一个库，提供自己的 API，同时提供上面提到的一个或多个功能，如 vue-router
+Vue.js 的插件应当有一个公开方法 install 。这个方法的第一个参数是 Vue 构造器 , 第二个参数是一个可选的选项对象:
+
+```JavaScript
+MyPlugin.install = function (Vue, options) {
+  // 1. 添加全局方法或属性
+  Vue.myGlobalMethod = function () {
+    // 逻辑...
+  }
+  // 2. 添加全局资源
+  Vue.directive('my-directive', {
+    bind (el, binding, vnode, oldVnode) {
+      // 逻辑...
+    }
+    ...
+  })
+  // 3. 注入组件
+  Vue.mixin({
+    created: function () {
+      // 逻辑...
+    }
+    ...
+  })
+  // 4. 添加实例方法
+  Vue.prototype.$myMethod = function (options) {
+    // 逻辑...
+  }
+}
+
+// 调用 `MyPlugin.install(Vue)`
+Vue.use(MyPlugin, Options)
+```
+注意到没，install并不是vue提供的，而是MyPlugin对象的
