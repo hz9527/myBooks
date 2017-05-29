@@ -370,5 +370,42 @@ myEmitter.prependListener('test', (stream) => {
 ```
 EventEmitter.defaultMaxListeners你懂的
 
-
 ### 调试
+node调试不比浏览器，原声的调试方法主要是通过命令行，当然随着ide的强大，也有ide具有调试js的能力  
+#### 原生调试
+使用命令行在终端中输入debug file  
+流程控制  
+1. c 继续执行
+2. n 下一步
+3. step（s）跳进函数
+4. out（o）跳出函数
+5. pause暂停
+
+命令行断点
+1. setBreakpoint(), sb() - 在当前行设置断点
+2. setBreakpoint(line), sb(line) - 在指定行设置断点
+3. setBreakpoint('fn()'), sb(...) - 在函数体的第一条语句设置断点
+4. setBreakpoint('script.js', 1), sb(...) - 在 script.js 的第 1 行设置断点
+5. clearBreakpoint('script.js', 1), cb(...) - 清除 script.js 第 1 行的断点
+
+信息
+1. backtrace, bt - 打印当前执行框架的回溯
+2. list(5) - 列出脚本源代码的 5 行上下文（前后各 5 行）
+3. watch(expr) - 添加表达式到监视列表
+4. unwatch(expr) - 从监视列表移除表达式
+5. watchers - 列出所有监视器和它们的值（每个断点会自动列出）
+6. repl - 打开调试器的 repl，用于在所调试的脚本的上下文中进行执行
+7. exec expr - 在所调试的脚本的上下文中执行一个表达式
+
+执行控制
+1. run - 运行脚本（调试器开始时自动运行）
+2. restart - 重新启动脚本
+3. kill - 终止脚本
+
+其他
+1. scripts - 列出所有已加载的脚本
+2. version - 显示 V8 引擎的版本号
+
+调试时可以在代码中加入debugger
+
+具体还是在实践中积累吧，另外建议可以使用debugger工具，如ide自带与node-inspector调试工具
