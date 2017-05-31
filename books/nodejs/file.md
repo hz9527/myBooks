@@ -25,46 +25,47 @@
 
 |api                                                                                     | 作用                                             ｜
 |----------------------------------------------------------------------------------------|--------------------------------------------------|
-|fs.access(path[, mode], callBack) fs.accessSync(path[, mode], callBack)                 |        |
-|fs.appendFile(file,data[, options], callBack) fs.appendFileSync(file,data[, options])   |         |
-|fs.chomd(path,mode,callBack) fs.chomdSync(path, mode)                                   |        |
-|fs.chown(path,uid,gid,callBack) fs.chown(path,uid,gid)                                  |        |
-|fs.close(fd, callBack) fs.closeSync(fd)                                                 |        |
-|fs.constants                                                                            |        |
-|fs.createReadStream(path[,options])                                                     |        |
-|fs.createWriteStream(path[,options])                                                    |        |
-|fs.existsSync(path)                                                                     |        |
-|fs.fchomd(fd,mode,callBack) fs.fchomdSync(fd,mode)                                      |        |
-|fs.fchown(fd,uid,gid,callBack) fs.fchownSync(fd,uid,gid)                                |        |
-|fs.fdatasync(fd,callBack) fs.fdatesyncSync(fd)                                          |        |
-|fs.fstat(fd,callBack) fs.fstatSync(fd)                                                  |        |
-|fs.fsync(fd,callBack) fs.fsyncSync(fd)                                                  |        |
-|fs.ftruncate(fd,len,callBack) fs.ftruncateSync(fd,len)                                  |        |
-|fs.futimes(fd, atime, mtime,callBack) fs.futimesSync(fd,atime,mtime)                    |        |
-|fs.lchome(path,mode,callBack) fs.lchomdSync(path,mode)                                  |        |
-|fs.lchown(path,uid,gid,callBack) fs.lchownSync(path,uid,gid)                            |        |
-|fs.link(existingPath,newPath,callBack) fs.linkSync(existingPath,newPath)                |        |
-|fs.lstat(path,callBack) fs.lstatSync(path)                                              |        |
-|fs.mkdir(path[,mode],callBack) fs.mkdirSync(path[,mode])                                |        |
-|fs.mkdtemp(prefix[,options],callBack) fs.mkdtempSync(prefix[,options])                  |        |
-|fs.open(path,flags[,options],callBack) fs.openSync(path,flags[,options])                |        |
-|fs.read(fd,buffer,offset,length,position,callBack) fs.readSync                          |        |
-|fs.readdir(path[,options],callBack) fs.readdirSync(path[,options])                      |        |
-|fs.readFile(file[,options],callBack) fs.readFileSync(file[,options])                    |        |
-|fs.readlink(path[,options],callBack) fs.readlinkSync(path[,options])                    |        |
-|fs.realpath(path[,options],callBack) fs.realpathSync(path[,options])                    |        |
-|fs.rename(oldPath, newPath, callBack) fs.renameSync(oldPath,newPath)                    |        |
-|fs.rmdir(path,callBack) fs.rmdirSync(path)                                              |        |
-|fs.stat(path,callBack) fs.statSync(path)                                                |        |
-|fs.symlink(target,path[,type],callBack) fs.symlinkSync(target,path[,type])              |        |
-|fs.truncate(path,len,callBack) fs.truncateSync(path,len)                                |        |
-|fs.unlink(path,callBack) fs.unlinkSync(path)                                            |        |
-|fs.unwatchFile(filename[,listener])                                                     |        |
-|fs.utimes(path,atime,mtime,callBack) fs.utimesSync(path,atime,mtime)                    |        |
-|fs.watch(filename[,options][,listener])                                                 |        |
-|fs.watchFile(filename[,options],listener)                                               |        |
-|fs.write fs.writeSync 4                                                                 |        |
-|fs.writeFile(file,data[,options],callBack) fs.writeFileSync(file,data[,options])        |        |
+|fs.access(path[, mode], callBack) fs.accessSync(path[, mode], callBack)                 |指定目录或文件权限（具体通过made决定）                 |
+|fs.constants                                                                            |返回一个包含常用文件系统操作的常量的对象                |
+|fs.existsSync(path)                                                                     |判断某个路径或文件是否存在                            |
+|fs.open(path,flags[,options],callBack) fs.openSync(path,flags[,options])                |打开文件                                          |
+|fs.close(fd, callBack) fs.closeSync(fd)                                                 |关闭文件                                           |
+|fs.link(existingPath,newPath,callBack) fs.linkSync(existingPath,newPath)                |建立文件硬连接（符号链接）                           |
+|fs.symlink(target,path[,type],callBack) fs.symlinkSync(target,path[,type])              |创建符号链接                                       |
+|fs.unlink(path,callBack) fs.unlinkSync(path)                                            |取消符号链接                                       |
+|fs.readlink(path[,options],callBack) fs.readlinkSync(path[,options])                    |返回符号链接的字符串值                              |
+|fs.read(fd,buffer,offset,length,position,callBack) fs.readSync                          |从 fd 指定的文件中读取数据                          |
+|fs.readdir(path[,options],callBack) fs.readdirSync(path[,options])                      |读取一个目录的内容                                 |
+|fs.readFile(file[,options],callBack) fs.readFileSync(file[,options])                    |读取一个文件的全部内容                              |
+|fs.realpath(path[,options],callBack) fs.realpathSync(path[,options])                    |获取文件或目录绝对路径                              |
+|fs.rename(oldPath, newPath, callBack) fs.renameSync(oldPath,newPath)                    |重命名文件及路径                                   |
+|fs.rmdir(path,callBack) fs.rmdirSync(path)                                              |删除目录                                          |
+|fs.mkdir(path[,mode],callBack) fs.mkdirSync(path[,mode])                                |创建文件夹                                        |
+|fs.mkdtemp(prefix[,options],callBack) fs.mkdtempSync(prefix[,options])                  |创建一个唯一的临时目录                              |
+|fs.createReadStream(path[,options])                                                     |返回一个新建的 ReadStream 对象（可读流）              |
+|fs.createWriteStream(path[,options])                                                    |返回一个新建的 ReadStream 对象（可写流）              |
+|fs.appendFile(file,data[, options], callBack) fs.appendFileSync(file,data[, options])   |向指定文件添加内容                                   |
+|fs.ftruncate(fd,len,callBack) fs.ftruncateSync(fd,len)                                  |截断文件                                          |
+|fs.truncate(path,len,callBack) fs.truncateSync(path,len)                                |截断文件                                          |
+|fs.write fs.writeSync 4                                                                 |写入 buffer 到 fd 指定的文件                       |
+|fs.writeFile(file,data[,options],callBack) fs.writeFileSync(file,data[,options])        |写入数据到文件，如果文件已经存在，则替代文件            |
+|fs.stat(path,callBack) fs.statSync(path)                                                |查看文件信息                                       |
+|fs.fstat(fd,callBack) fs.fstatSync(fd)                                                  |在文件open情况下查看文件信息                         |
+|fs.lstat(path,callBack) fs.lstatSync(path)                                              |查看文件信息                                       |
+|fs.fdatasync(fd,callBack) fs.fdatesyncSync(fd)                                          |文件写入硬盘                                       |
+|fs.fsync(fd,callBack) fs.fsyncSync(fd)                                                  |文件写入硬盘                                       |
+|fs.chomd(path,mode,callBack) fs.chomdSync(path, mode)                                   |修改文件读写权限                                    |
+|fs.fchomd(fd,mode,callBack) fs.fchomdSync(fd,mode)                                      |在文件open情况下更改文件权限                         |
+|fs.lchome(path,mode,callBack) fs.lchomdSync(path,mode)                                  |修改文件读写权限                                    |
+|fs.chown(path,uid,gid,callBack) fs.chown(path,uid,gid)                                  |修改文件所有权。                                    |
+|fs.fchown(fd,uid,gid,callBack) fs.fchownSync(fd,uid,gid)                                |在文件open情况下更改文件所有权                        |
+|fs.lchown(path,uid,gid,callBack) fs.lchownSync(path,uid,gid)                            |修改文件所有权                                     |
+|fs.futimes(fd, atime, mtime,callBack) fs.futimesSync(fd,atime,mtime)                    |修改文件访问时间及修改时间                           |
+|fs.unwatchFile(filename[,listener])                                                     |取消watch                                         |
+|fs.utimes(path,atime,mtime,callBack) fs.utimesSync(path,atime,mtime)                    |修改文件访问时间及修改时间                           |
+|fs.watch(filename[,options][,listener])                                                 |watch文件或目录                                    |
+|fs.watchFile(filename[,options],listener)                                               |watch一个文件                                      |
+
 #### 读文件
 
 #### 写文件
