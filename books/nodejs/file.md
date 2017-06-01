@@ -126,3 +126,44 @@ fs.open('myfile', 'wx', (err, fd) => {
 ### path
 
 ### fileReader
+上面主要是node关于文件的一些内容，接下来看看浏览器提供的fileReader用于读取文件  
+> FileReader 对象允许Web应用程序异步读取存储在用户计算机上的文件（或原始数据缓冲区）的内容，使用 File 或 Blob 对象指定要读取的文件或数据。  
+
+我们知道使用input（type file）并不能直接获取到文件路径来引用。试想这个场景： 用户通过input选择了一张图片，我们如何将这张图片给用户编辑？  
+1）将文件上传至服务器，然后从服务器取得文件路径，然后给用户编辑，显然这种方法很傻，一方面浪费网络资源另一方面需要等待  
+2）将本地文件转成二进制流活着base64直接使用canvas或者images  
+那么让我们来学习一下fileReader吧  
+需要了解几个概念  
+1. 文件格式
+2. 读取状态
+3. 读取格式
+4. 事件
+需要将需要读取的file或blob交给fileReader读取；在读取过程中会有0，1，2（EMPTY，LOADING，DONE）三种状态；  
+可以以四种文件读取为四种格式readAsArrayBuffer，readAsBinaryString，readAsDataURL，readAsText；  
+既然是一种异步方法，那么就像ajax一样会提供相应事件1）onabort2）onerror3）onload4）onloadend5）onloadstart6）onprogress
+
+使用教程：
+1. 实例化fileReader
+2. 执行读取方法
+3. 监听事件
+
+举个 :chestnut:
+```JavaScript
+var file = document.getElementById('input').files[0]
+var reader = new FileReader()
+reader.readAsDataURL(file)
+reader.onprogress(e) = function (e) {
+  console.log(e) // progress info
+}
+reader.onloadend = function () {
+  console.log(this)
+  // {
+  //   result: xxx,
+  //   error: null,
+  //   readyState: 2,
+  //   onloadstart ... // 绑定的事件
+  // }
+}
+```
+如果执行onabort会直接中断文件读取并将readyState置为2  
+可以配合input，canvas，video等使用，将读取结果作为video.src就好
