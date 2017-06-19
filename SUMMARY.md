@@ -21,6 +21,12 @@
 
 ## 程序设计与软件工程
   * [设计模式](./books/js_design_mode/index.md)
+    * [面向对象](./books/js_design_mode/oop.md)  
+    * [创建型设计模式](./books/js_design_mode/create.md)  
+    * [结构型设计模式](./books/js_design_mode/model.md)  
+    * [行为型设计模式](./books/js_design_mode/behavior.md)  
+    * [技巧型设计模式](./books/js_design_mode/other.md)  
+    * [框架型设计模式](./books/js_design_mode/framework.md) 
   * [webpack](./books/webpack/index.md)
   * [数据解构及算法](./books/computed_data/index.md)
 
