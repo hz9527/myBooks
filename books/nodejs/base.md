@@ -1,5 +1,5 @@
 ## 基础知识
-目录：
+目录：  
 [交互运行环境REPL](#交互运行环境REPL)  
 [console](#console)  
 [timer定时器](#timer定时器)  
