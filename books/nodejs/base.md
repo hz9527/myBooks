@@ -46,11 +46,13 @@ console.log('im %s, im %d', 'huangzhong', 24) // im huangzhong, im 24
 * %s string
 * %j json
 * %% %不消耗占位符
+
 ```JavaScript
 console.log('%%', 10) // % 10
 
 console.log('%d%%', 10) // 10%
 ```
+
 
 #### Console类
 可以作为日志纪录
@@ -284,6 +286,7 @@ myEmitter.emit('event');
 1. on
 2. once
 3. addListener
+
 ```JavaScript
 var EventEmitter = reuire('events')
 class MyEmitter extends EventEmitter {}
@@ -295,6 +298,7 @@ myEmitter.addListener(eventName, callBack)
 ```
 
 #### events主动触发事件
+
 ```JavaScript
 ...
 myEmitter.emit(eventName, arg) // 和vue很像
@@ -321,6 +325,7 @@ myEmitter.emit('error', new Error('whoops!')); // 打印: 有错误
 试想，假如我们绑定一个事件或者解绑一个事件是不是应该告诉我们一声？  
 对，events核心模块就是这么强，给我提供了绑定与解绑事件  
 **node 为我们提供了newListener 与 removeListener事件来监听事件绑定与移除** 参数都是eventName listener（callBack）
+
 ```JavaScript
 const myEmitter = new MyEmitter();
 // 只处理一次，所以不会无限循环
