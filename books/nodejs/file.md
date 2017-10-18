@@ -18,7 +18,7 @@
 
 将从读写文件，文件信息，文件操作，其他五个方面来介绍fs核心模块  
 官方文档中分了四个类
-1. fs.ReafStream类
+1. fs.ReadStream类
 2. fs.WriteStream类
 3. fs.Stats类
 4. fs.FSWatcher类
@@ -120,6 +120,27 @@ fs.open('myfile', 'wx', (err, fd) => {
 
 
 ### Buffer
+> 在 ECMAScript 2015 (ES6) 引入 TypedArray 之前，JavaScript 语言没有读取或操作二进制数据流的机制。 Buffer 类被引入作为 Node.js API 的一部分，使其可以在 TCP 流或文件系统操作等场景中处理二进制数据流。
+TypedArray 现已被添加进 ES6 中，Buffer 类以一种更优化、更适合 Node.js 用例的方式实现了 Uint8Array API。
+
+#### Buffer特点
+1. 实例类似数组
+2. 大小固定，在V8堆外分配内存
+3. 创建时确定其大小，且不可更改
+4. 在node中是全局变量，因此无需require
+
+#### Buffer创建
+1. Buffer.from
+2. Buffer.alloc
+3. Buffer.allocUnsafe
+> 在node v6前是使用new Buffer创建，现已废弃
+
+#### Buffer与字符编码
+Buffer支持 ascii utf8 utf16le（ucs2） base64 latin1（binary） hex
+
+#### Buffer实例与ES6迭代器
+支持 for of  keys values entries迭代器
+
 
 ### Stream
 
