@@ -74,6 +74,14 @@ let [a, ...b] = [1, 2, 3] // a 1 b [2, 3] 支持rest
 
 > 被解构的部分需要具备迭代器功能
 
+#### 3.默认值
+当解构值为undefined才使用默认值
+
+```JavaScript
+let [a = 1] = [null] // a null
+let [a, b = 2] = [1] // a 1 b 2 
+```
+
 ***
 ### 函数的拓展  
 [toTop](#es6学习)  
