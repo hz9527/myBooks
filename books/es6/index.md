@@ -79,8 +79,39 @@ let [a, ...b] = [1, 2, 3] // a 1 b [2, 3] 支持rest
 
 ```JavaScript
 let [a = 1] = [null] // a null
-let [a, b = 2] = [1] // a 1 b 2 
+let [a, b = 2] = [1] // a 1 b 2
 ```
+
+#### 4.对象形式的解构
+kv对应即可
+
+```JavaScript
+let {a, b} = {a: 1, b: 2} // a 1 b 2
+let {a: c, b: d} = {a: 1, b: 2} // c 1 d 2
+let {length: l} = 'hello' // 将hello看作是包装类型，因此相当于 let {length: l} = {length: 5, ...}
+```
+
+> 还有字符串解构赋值，数值，布尔解构赋值
+
+#### 5.函数参数的解构赋值
+其实本质和上面一致，保持一一对应原则即可
+
+```JavaScript
+function a ([x, y]) {
+  console.log(x, y)
+}
+a([1, 2]) // 1 2
+
+var arr = [[1, 2], [3, 4]]
+arr.map(([x, y]) => {
+  console.log(x, y) // 1 2    3 4
+})
+```
+
+#### 6.应用
+1. 交换值
+2. 将函数返回保持到多个变量
+3. 模块化等
 
 ***
 ### 函数的拓展  
