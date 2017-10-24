@@ -26,8 +26,9 @@
     * [结构型设计模式](./books/js_design_mode/model.md)  
     * [行为型设计模式](./books/js_design_mode/behavior.md)  
     * [技巧型设计模式](./books/js_design_mode/other.md)  
-    * [框架型设计模式](./books/js_design_mode/framework.md) 
+    * [框架型设计模式](./books/js_design_mode/framework.md)
   * [webpack](./books/webpack/index.md)
+    * [rollup](./books/webpack/rollup.md)
   * [数据解构及算法](./books/computed_data/index.md)
 
 ## 后端
