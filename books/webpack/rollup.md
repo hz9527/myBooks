@@ -86,6 +86,48 @@ name为模块名，当format为模块化时这个是必须的，如果是iife，
 [关于插件](#关于插件)  
 
 4.external Function or Array
+如果是Function会传入id，返回true或false，如果是数组则为id列表  
+id为外部依赖名称或其绝对路径  
+
+5.globals Object
+与external一致，id：name  
+```javaScript
+{
+  globals: {
+    jquery: '$'
+  }
+}
+```
+
+二、高级属性
+1.paths 为output属性 Function or Object
+```javaScript
+{
+  external: ['jquery'],
+  output: {
+    file: 'index.js',
+    name: 'myBundle',
+    format: 'cjs',
+    paths: {
+      jquery: '//jquery.min.js'
+    }
+  },
+  globals: {
+    jquery: '$'
+  }
+}
+```
+
+2.banner/footer String
+添加在打包后文件字符串
+```js
+'/* my-library version ' + version + ' */' // 记得加注释符号
+```  
+
+3.intro/outro String类似与banner与footer，不过是代码而不是注释了  
+
+4.cache  
+
 
 ## 关于插件
 
