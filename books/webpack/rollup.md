@@ -182,6 +182,8 @@ watch有以下配置项：
 3. exclude
 
 ## 关于插件
+rollup插件还是挺多的，包含js转译，js模块化，前端框架，css及模版，文件文本，lint，工作流等各类插件  
+[更多](https://github.com/rollup/rollup/wiki/Plugins)
 
 ## 关于JSAPI  
 学习完rollup.config.js配置项后对于js API应该大致能有一定概念。核心思路是rollup提供类似打包（输入）指令，输出指令，及watch API  
@@ -309,3 +311,29 @@ module.exports = {
 ```
 
 **三、Babel集成**  
+1.引入babel插件 rollup-plugin-babel  
+2.使用插件  
+插件支持三个配置项  
+1）externalHelpers，Boolean 是否使用babel  
+2）include，Array｜String  
+3）exclude，Array｜String 建议使用"node_modules/** "  
+4)externalHelpersWhitelist，Array，指明哪些文件需要转译，默认是所有  
+
+3.配置.babelrc
+
+```JavaScript
+{
+  "presets": [
+    ["latest", {
+      "es2015": {
+        "modules": false
+      }
+    }]
+  ],
+  "plugins": ["external-helpers"]
+}
+```
+
+> 注：该配置是希望被打包的文件而不是全局，因此建议放置在开发文件夹根目录，如src
+
+****  
