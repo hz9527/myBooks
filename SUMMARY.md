@@ -29,7 +29,11 @@
     * [框架型设计模式](./books/js_design_mode/framework.md)
   * [webpack](./books/webpack/index.md)
     * [rollup](./books/webpack/rollup.md)
-  * [数据解构及算法](./books/computed_data/index.md)
+    * [webpack概念](./books/webpack/webpack_desc.md)
+    * [webpack配置](./books/webpack/webpack_conf.md)
+    * [webpack API](./books/webpack/webpack_api.md)
+    * [webpack其他](./books/webpack/webpack_other.md)
+  * [数据结构及算法](./books/computed_data/index.md)
 
 ## 后端
   * [nodejs](./books/nodejs/index.md)
