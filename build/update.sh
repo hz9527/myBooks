@@ -1,5 +1,5 @@
 read -p "do you confirm update website?" -n 1 -r
-each
+echo
 if [[ $REPLY =~ ^[Yy]$ ]];then
   gitbook build
   git checkout gh-pages
