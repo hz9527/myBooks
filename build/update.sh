@@ -3,7 +3,7 @@ each
 if [[ $REPLY =~ ^[Yy]$ ]];then
   gitbook build
   git checkout gh-pages
-  if [[ $? == 0]];then
+  if [[ $? == 0 ]];then
     mv ./_book/books ./_book/gitbook ./_book/index.html ./_book/methods.md ./search_index.json ./
     git status
     git add .
