@@ -188,3 +188,7 @@ const store = new Vuex.Store({
 2. 在需要发布事件或监听事件的组件内引入vue空实例 import bus from './bus.js'
 3. 在合适的钩子里监听事件 如created bus.$on(eventName, handler)
 4. 在合适的地方发送消息，如click bus.$emit(eventName, message)
+
+
+
+*****

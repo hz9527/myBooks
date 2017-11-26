@@ -1,0 +1,25 @@
+{
+  "name": "mybooks",
+  "version": "1.0.0",
+  "description": "my notes",
+  "dependencies": {
+    "gitbook-plugin-toggle-chapters": "^0.0.3",
+    "gitbook-plugin-theme-api": "^1.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "update": "sh ./build/update.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hz9527/myBooks.git"
+  },
+  "keywords": [
+    "notes"
+  ],
+  "author": "hz9527",
+  "bugs": {
+    "url": "https://github.com/hz9527/myBooks/issues"
+  },
+  "homepage": "https://github.com/hz9527/myBooks#readme"
+}

@@ -243,3 +243,8 @@ MyPlugin.install = function (Vue, options) {
 Vue.use(MyPlugin, Options)
 ```
 注意到没，install并不是vue提供的，而是MyPlugin对象的
+
+
+
+
+*****

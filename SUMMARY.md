@@ -7,15 +7,14 @@
   * [es6](./books/es6/index.md)
   * [html5](./books/html5/index.md)
   * [css进阶](./books/css_forward/index.md)
-  * [js动画](./books/js_animation/index.md)
-  * [webkit](./books/webkit/index.md)
+  * [js进阶及动画](./books/js_forward/index.md)
+  * [webkit浏览器底层原理](./books/webkit/index.md)
 
 ## 前端框架
   * [vue全家桶](./books/vue/index.md)
     * [vue](./books/vue/vue.md)
     * [vueRouter](./books/vue/vuerouter.md)
     * [vuex](./books/vue/vuex.md)
-    * [vueTouch](./books/vue/vuetouch.md)
   * [vue ssr](./books/vue_ssr/index.md)
   * [react](./books/react/index.md)
 
