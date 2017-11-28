@@ -6,7 +6,11 @@
 [热加载*](#hotmodulereplacementplugin)  
 [html模版](#htmlwebpackplugin)  
 [限制包数量*](#limitchunkcountplugin)  
-[限制包数量*](#limitchunkcountplugin)  
+[分块打包*](#commonschunkplugin)  
+[不打断进程*](#noemitonerrorsplugin)  
+[热替换显示替换包名*](#namedmodulesplugin)  
+[压缩js*](#uglifyjsplugin)  
+[分离css](#extracttextplugin)  
 **loader**  
 
 ### DefinePlugin
@@ -105,3 +109,60 @@ console.log(function () {console.log(1)})
   ]
 }
 ```
+
+### CommonsChunkPlugin
+> 分模块打包的好处是一次加载多次使用，方式是将业务代码与依赖代码分开，通过`manifest`管理。然而绝大部分场景却变成了将业务代码与依赖分开
+个人认为应该将公用的第三方库代码打完并缓存到用户端本地，`manifest`及业务代码每次请求新的，或者打四个包`commonVendor` `vendor` `manifest` `app`
+
+如何实现（将依赖与业务代码分开）
+```JavaScript
+{
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks (module, counts) { // module {context, resource}
+        return (
+          module.resource && /\.js$/.test(module.resource) &&
+          module.resource.indexOf('node_modules') > -1)
+      }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest',
+      minChunks: Infinity
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'app', // 对应入口名entry: {app: './src/index.js'}
+      async: 'vendor-async',
+      minChunks: 3,
+      children: true
+    })
+  ]
+}
+```
+
+关于按需加载，默认会根据其顺序下标作为name  
+```JavaScript
+var Test = () => import(/* webpackChunkName: "xx" */'vue')
+```
+
+### NoEmitOnErrorsPlugin
+> 如果使用cli启动webpack会存在一个问题，当编译错误会使得webpack退出进程，使用此插件可以保持webpack不主动退出
+
+`new webpack.NoEmitOnErrorsPlugin()`
+
+### NamedModulesPlugin
+> 我们有时候并不满足于热替换，还希望热替换时能显示替换了什么
+
+`new webpack.NamedModulesPlugin()`
+
+### UglifyJsPlugin
+> 压缩js使用，但是对于es6+的代码treesharking支持并不好（不代表不支持）
+
+`new webpack.optimize.UglifyJsPlugin()`
+
+### ExtractTextPlugin
+> 将`css`放置在`js`中最大的坏处是`js`加载完后`css`才能被加载，这也就意味着要么将`js`放置在`head`中阻塞`dom`加载要么把`css`分离出来
+这个插件就会将`chunk`中依赖的`css`文件单独拎出来
+
+但是如果是异步加载的`chunk`呢？嗯，这个插件很笨，默认`allChunks`为`true`意味着所有`css`都会被提起出来，因此设置为`false`即可  
+此外还需要用此插件在`cssLoader`里做一下手脚，它才知道哪些是需要被提取出来的
