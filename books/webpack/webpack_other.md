@@ -2,16 +2,24 @@
 **插件**  
 > \* 为webpack自带插件
 
+[插件](#plugins)  
 [定义全局变量*](#defineplugin)  
 [热加载*](#hotmodulereplacementplugin)  
+[热替换显示替换包名*](#namedmodulesplugin)  
 [html模版](#htmlwebpackplugin)  
+[不打断进程*](#noemitonerrorsplugin)  
 [限制包数量*](#limitchunkcountplugin)  
 [分块打包*](#commonschunkplugin)  
-[不打断进程*](#noemitonerrorsplugin)  
-[热替换显示替换包名*](#namedmodulesplugin)  
 [压缩js*](#uglifyjsplugin)  
 [分离css](#extracttextplugin)  
+[优化压缩css](#optimizecssplugin)  
+[更多](https://github.com/webpack-contrib/awesome-webpack#webpack-plugins)  
 **loader**  
+
+## Plugins
+除以下插件外可以看看[性能分析](https://github.com/webpack-contrib/webpack-bundle-analyzer)插件，
+[压缩图片](https://github.com/Klathmon/imagemin-webpack-plugin)插件，
+[离线应用](https://github.com/NekR/offline-plugin)插件
 
 ### DefinePlugin
 > 本插件用于定义一些全局变量或者一些全局代码片段，这个插件是webpack自带的
@@ -76,7 +84,7 @@ console.log(function () {console.log(1)})
 `new webpack.HotModuleReplacementPlugin()`
 
 ### HtmlWebpackPlugin
-> 这个插件为我们提供html模版，供webpack使用
+> 这个插件为我们提供html模版，供`webpack`使用，`npm`包`html-webpack-plugin`
 
 我们希望webpack打包完成后自动将打包完成的页面注入到入口html中，这就是这个插件能为我们做的事情之一，当然这是一个第三方插件  
 我们可以不需要在根目录中写一个html，完全使用本插件完成简单html的生成，当然建议还是提供一个模版，来注入包即可  
@@ -158,11 +166,62 @@ var Test = () => import(/* webpackChunkName: "xx" */'vue')
 ### UglifyJsPlugin
 > 压缩js使用，但是对于es6+的代码treesharking支持并不好（不代表不支持）
 
-`new webpack.optimize.UglifyJsPlugin()`
+```JavaScript
+new webpack.optimize.UglifyJsPlugin({
+  compress: {
+    warnings: false
+  },
+  sourceMap: true,
+  parallel: true
+})
+```
 
 ### ExtractTextPlugin
 > 将`css`放置在`js`中最大的坏处是`js`加载完后`css`才能被加载，这也就意味着要么将`js`放置在`head`中阻塞`dom`加载要么把`css`分离出来
-这个插件就会将`chunk`中依赖的`css`文件单独拎出来
+这个插件就会将`chunk`中依赖的`css`文件单独拎出来。`npm`包`extract-text-webpack-plugin`
 
 但是如果是异步加载的`chunk`呢？嗯，这个插件很笨，默认`allChunks`为`true`意味着所有`css`都会被提起出来，因此设置为`false`即可  
 此外还需要用此插件在`cssLoader`里做一下手脚，它才知道哪些是需要被提取出来的
+```JavaScript
+module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: "css-loader"
+        })
+      }
+    ]
+  },
+  plugins: [
+    new ExtractTextPlugin({
+      filename: 'css/[name][contenthash].css',
+      allChunks: false
+    }),
+  ]
+```
+
+### OptimizeCSSPlugin
+> 优化压缩css，`npm`包`optimize-css-assets-webpack-plugin`，其实这个插件不仅可以压缩css还可以添加`sourcemap`，去除注释等
+需要配合`ExtractTextPlugin`使用
+
+```JavaScript
+{
+  plugins: [
+    new OptimizeCSSPlugin({
+      cssProcessorOptions: {
+        discardComments: {removeAll: true},
+        safe: true,
+        map: {inline: false}
+      }
+    })
+  ]
+}
+```
+****
+
+
+
+
+****
