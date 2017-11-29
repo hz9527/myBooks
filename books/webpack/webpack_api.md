@@ -1,9 +1,7 @@
 目录  
 [CLI](#cli)  
 [node](#node)  
-[module](#module)   
-[loader](#loader)    
-[plugin](#plugin)    
+[module](#module)    
 
 ## CLI
 简单使用
@@ -96,7 +94,3 @@ require.ensure
 
 var M = resolve => require.ensure([], () => resolve(require(['src'])), 'name')
 ```
-
-## loader
-
-## plugin
