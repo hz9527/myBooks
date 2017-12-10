@@ -33,6 +33,8 @@
     * [webpack API](./books/webpack/webpack_api.md)
     * [webpack其他](./books/webpack/webpack_other.md)
   * [数据结构及算法](./books/computed_data/index.md)
+    * [数据结构](./books/computed_data/dataStructure.md)
+    * [算法](./books/computed_data/algorithm.md)
 
 ## 后端
   * [nodejs](./books/nodejs/index.md)
