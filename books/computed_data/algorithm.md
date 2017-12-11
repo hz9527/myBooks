@@ -13,7 +13,7 @@
 * [高级排序算法](#高级排序算法)
   * [快速排序](#快速排序)
   * [堆栈排序](#堆栈排序)
-  * [规并排序](#规并排序)
+  * [归并排序](#归并排序)
   * [希尔排序](#希尔排序)
   * [排序算法总结](#排序算法总结)
 
@@ -158,10 +158,36 @@ for (let i = arr.length - 2; i >= 0; i--) {
 ### 高级排序算法
 
 #### 快速排序
+快速排序的核心就是计算一个中心点，然后将中心点从数组中取出，然后遍历新数组将大于中心点的值放在右数组中小于中心点的值放在左数组中然后拼接左右数组进行上述运算的结构，递归退出条件是直到数组长度为一
+
+```JavaScript
+function quickSort (arr) {
+  if (arr.length <= 1) return arr
+  let pivotInd = ~~(arr.length / 2)
+  let pivot = arr.splice(pivotInd, 1)[0]
+  let left = []
+  let right = []
+  let l = 1
+  for (let i = 0 ; i < arr.length ; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i])
+    } else if (arr[i] > pivot) {
+      right.push(arr[i])
+    } else {
+      l++
+    }
+  }
+  return quickSort(left).concat(new Array(l).fill(pivot), quickSort(right))
+}
+// 使用一行代码实现快排
+function quickSort (arr) {
+  return arr.length < 2 ? arr : quickSort(arr.slice(1).filter(item => item <= arr[0])).concat([arr[0]], quickSort(arr.slice(1).filter(item => item > arr[0])))
+}
+```
 
 #### 堆栈排序
 
-#### 规并排序
+#### 归并排序
 
 #### 希尔排序
 希尔排序其实只是对插入排序的一种优化，当数据量足够大的时候插入排序需要不断对比换位，插入。比如一个特别小的值在数组后端，那么需要不断换位插入。如果一开始先将这个数组按照一定间隔分成若干“子数组”，然后对每个子数组进行插入排序，这样可以保证每个子数组已经是从小到大，并可以通过多次这种间隔插入排序操作，那么最后在执行整体的插入排序时就不需要频繁的换位插入操作，那么问题来了，如何确定这个希尔数组呢？有一个常数701, 301, 132, 57, 23, 10, 4, 1，当然还可以计算出来  
