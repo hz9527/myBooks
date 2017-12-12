@@ -15,6 +15,8 @@
   * [堆栈排序](#堆栈排序)
   * [归并排序](#归并排序)
   * [希尔排序](#希尔排序)
+  * [计数排序](#计数排序)
+  * [桶排序](#桶排序)
   * [排序算法总结](#排序算法总结)
 
 
@@ -158,7 +160,7 @@ for (let i = arr.length - 2; i >= 0; i--) {
 ### 高级排序算法
 
 #### 快速排序
-快速排序的核心就是计算一个中心点，然后将中心点从数组中取出，然后遍历新数组将大于中心点的值放在右数组中小于中心点的值放在左数组中然后拼接左右数组进行上述运算的结构，递归退出条件是直到数组长度为一
+快速排序的核心就是计算一个中心点，然后将中心点从数组中取出，然后遍历新数组将大于中心点的值放在右数组中小于中心点的值放在左数组中然后拼接左右数组进行上述运算的结果，递归退出条件是直到数组长度为一
 
 ```JavaScript
 function quickSort (arr) {
@@ -188,6 +190,53 @@ function quickSort (arr) {
 #### 堆栈排序
 
 #### 归并排序
+个人感觉归并排序不如快速排序容易理解，归并排序是自上向下不断将数组均分直到两个子数组长度均小于2然后自下向上不断合并，因为每个合并过的子数组已经保证了从小到大，因此可以保证合并的新数组也是从小到大
+
+```JavaScript
+function merge (left, right) {
+  let result = []
+  while (left.length > 0 && right.length > 0) {
+    if (left[0] > right[0]) {
+      result.push(right.shift())
+    } else {
+      result.push(right.shift())
+    }
+  }
+  if (left.length > 0) {
+    result = result.concat(left)
+  }
+  if (right.length > 0) {
+    result = result.concat(right)
+  }
+  return result
+}
+function mergeSort (arr) {
+  if (arr.length < 2) { // 当数组长度为1或0才会执行merge操作，而merge的开始已经保证了从小至大，所以后面的concat操作没毛病
+    return arr
+  }
+  let mid = ~~(arr.length / 2)
+  let left = arr.slice(0, mid)
+  let right = arr.slice(mid)
+  return merge(mergeSort(left), mergeSort(right)) // 不断均分然后不断merge
+}
+// 对比快速排序
+function quickSort (arr) {
+  if (arr.length < 2) {
+    return arr
+  }
+  let pivotInd = ~~(arr.length / 2)
+  let pivot = arr.splice(pivotInd, 1)
+  let left = [], right = []
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i])
+    } else {
+      right.push(arr[i])
+    }
+  }
+  return quickSort(left).concat(pivot, quickSort(right))
+}
+```
 
 #### 希尔排序
 希尔排序其实只是对插入排序的一种优化，当数据量足够大的时候插入排序需要不断对比换位，插入。比如一个特别小的值在数组后端，那么需要不断换位插入。如果一开始先将这个数组按照一定间隔分成若干“子数组”，然后对每个子数组进行插入排序，这样可以保证每个子数组已经是从小到大，并可以通过多次这种间隔插入排序操作，那么最后在执行整体的插入排序时就不需要频繁的换位插入操作，那么问题来了，如何确定这个希尔数组呢？有一个常数701, 301, 132, 57, 23, 10, 4, 1，当然还可以计算出来  
@@ -204,5 +253,31 @@ function shellsort (list) {
   }
 }
 ```
+
+#### 计数排序
+计数排序有点类似数组去重，由于js数组不需要声明长度，因此我们可以将值变为下标存(意味着每个值是自然数)起来，然后统计每个值重复的次数，最后将值填回去
+
+```JavaScript
+function countSort (arr) {
+  let l = arr.length
+  let result = []
+  let count = []
+  let min = max = arr[0]
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i]] = count[arr[i]] ? count[arr[i]] + 1 : 1
+    min > arr[i] && (min = arr[i])
+    max < arr[i] && (max = arr[i])
+  }
+  for (let j = min; j <= max; j++) {
+    if (count[j]) {
+      result = result.concat(new Array(count[j]).fill(count[j]))
+    }
+  }
+  return result
+}
+```
+
+#### 桶排序
+桶排序和计数排序很像，但是桶排序适用场景是值比较固定（可以为负数，浮点数），重复数较多，数据多样性较少。如某个省高考分数排名，那么可以将每个分值作为一个空数组，然后遍历所有得分，将分数压入相应的数组，最后合并所有数组。
 
 #### 排序算法总结
