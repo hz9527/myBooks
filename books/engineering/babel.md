@@ -24,3 +24,25 @@ babel集成到rollup比较简单，只需要一个插件`rollup-plugin-babel`
 #### babel集成到webpack
 
 ### babelrc
+在`preset-env`发行后，基本就不需要手动引入`polyfill`，而是按需转译，好处在于文件会变得更小，但是一般我们是使用`babel-plugin-trnsform-runtime`，然而这个插件并不会转译原型新增方法，如`Array.protype.find`，当然，静态方法是会转译的，如`Object.assign`
+```JavaScript
+{
+  "presets": ["env"],
+  "plugins": ["transform-runtime"]
+}
+```
+
+所以更好的做法是定制`preset-env`，但这个需要beta版的babel。  
+以webpack为例，包括babel-loader,babel-core,babel-preset-env,polyfill
+
+```sh
+npm i @babel/core @babel/loader @babel/preset-env @babel/polyfill -D
+```
+
+```JavaScript
+{
+  "presets": [
+    ["@babel/preset-env", "useBuiltIns": "usage"]
+  ]
+}
+```
