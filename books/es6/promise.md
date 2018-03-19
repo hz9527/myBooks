@@ -196,6 +196,65 @@ MyPromise.prototype.catch = function (onRejected) {
 
 ```
 
-但是我们发现在catch时由于使用了默认，并且未做穿透导致catch不到错误，当然，还应为onresolved，onrejected做一个异步处理
+接下来我们会发现当未传递onResolved及onRejected时值不能被传递，并且当一次reject会一直传递状态。当然，还应为onresolved，onrejected做一个异步处理
 
 第五步
+```JavaScript
+function MyPromise (executor) {
+  this.status = 'pending'
+  this.data = null
+  this.onResolvedCallback = []
+  this.onRejectedCallback = []
+  try {
+    executor(this._setState('resolved'), this._setState('rejected'))
+  } catch (err) {
+    this._setState('rejected')(err)
+  }
+}
+
+MyPromise.prototype._setState = function (state) {
+  return data => {
+    if (this.status === 'pending') {
+      this.data = data
+      this.status = state
+      state === 'resolved' ? this.onResolvedCallback.forEach(fn => setTimeout(fn, 0, this.data)) :
+        this.onRejectedCallback.forEach(fn => setTimeout(fn, 0, this.data))
+    }
+  }
+}
+
+MyPromise.prototype.then = function (onResolved, onRejected) {
+  typeof onResolved !== 'function' && (onResolved = v => v)
+  typeof onRejected !== 'function' && (onRejected = v => v)
+  let that = this
+  return new MyPromise(function (resolve, reject) {
+    if (that.status === 'pending') {
+      that.onResolvedCallback.push(() => {
+        that._execThen(onResolved, resolve, reject, 'resolved')
+      })
+      that.onRejectedCallback.push(() => {
+        that._execThen(onRejected, resolve, reject, 'rejected')
+      })
+    } else {
+      that._execThen(that.status === 'resolved' ? onRejected : onRejected, resolve, reject, that.status)
+    }
+  })
+}
+
+MyPromise.prototype._execThen = function (subscribe, nextResolve, nextReject, state) {
+  let result = subscribe.bind(this)(this.data)
+  if (result instanceof MyPromise) {
+    result.then(nextResolve, nextReject)
+  } else {
+    try {
+      state === 'rejected' ? nextReject(result) : nextResolve(result)
+    } catch (err) {
+      nextReject(err)
+    }
+  }
+}
+
+MyPromise.prototype.catch = function (onRejected) {
+  return this.then(null, onRejected)
+}
+```
