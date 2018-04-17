@@ -45,6 +45,44 @@ function createSome (name) {
 }
 ```
 
+#### 工厂方法模式
+工厂方法模式，和简单的工厂模式一样 —— 用于实例化多种类  
+但肯定更为复杂一点，主要区别在于安全，其次必要的话可以形成超类  
+**安全模式类**  
+我们在使用一个构造函数不一定知道它是一个构造函数，所以加一点代码就可以避免这种事情发生
+```javaScript
+function Demo () {
+  if (!(this instanceof Demo)) {
+    return new Demo()
+  }
+  // ...
+}
+```
+只需要判断`this`是否是构造函数实例即可  
+
+如果工厂函数需要管理的类很复杂该怎么处理呢？  
+**把构造函数写在工厂函数的原型上**
+```JavaScript
+function Factory (className) {
+  if (this instanceof Factory) {
+    return new this[className]()
+  } else {
+    return new Factory(className)
+  }
+}
+Factory.prototype.classA = function () {
+  // ...
+}
+Factory.prototype.classA.prototype.a = function () {
+  // ...
+}
+// ...
+```
+> 安全模式类是一种很好的思想，就像类型检测一样，使得我们的构造函数只能用于构造对象，即使你没使用new关键字
+
+#### 抽象工厂模式
+
+
 ### 建造者模式
 
 ### 原型模式
