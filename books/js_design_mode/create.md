@@ -81,10 +81,42 @@ Factory.prototype.classA.prototype.a = function () {
 > 安全模式类是一种很好的思想，就像类型检测一样，使得我们的构造函数只能用于构造对象，即使你没使用new关键字
 
 #### 抽象工厂模式
+抽象工厂模式是工厂方法模式的进一步改进，由于在js中没有抽象类这样的概念，abstract也是保留字，所以衍生出抽象工厂模式  
+首先谈谈抽象类，比如我们会有一系列类，这些类又继承于某个超类，而这个超类的作用一方面是让子类继承一些属性（主要指函数属性），而有一些函数属性是希望被重写的，那么就出现这样的情景，通过一个工厂函数返回一个构造函数，并且检查构造函数是否重写了超类相关属性  
 
+**非通用抽象工厂**  
+假设有一个获得球子类的函数，获取球的半径和获取弹性方法是需要检查的  
+```JavaScript
+function BallFactory (construct) {
+  if (typeof construct === 'function') {
+    construct.prototype = new Ball()
+    construct.prototype.constructor = construct
+    return construct
+  } else {
+    throw new Error(`type error`)
+  }
+}
+function Ball () {}
+Ball.prototype.getRadius = function () {
+  throw new Error('getRadius is necessary')
+}
+Ball.prototype.getStretch = function () {
+  throw new Error('getStretch is necessary')
+}
+```
+
+**更通用的抽象工厂**  
+假设
+```JavaScript
+
+```
 
 ### 建造者模式
 
 ### 原型模式
 
 ### 单例模式
+
+## 总结
+这一部分主要是创建型设计模式，包括工厂模式（简单工厂模式、工厂方法模式、抽象工厂模式）、建造者模式、原型模式、单例模式  
+工厂模式主要是通过工厂函数实现对象的创建
