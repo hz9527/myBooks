@@ -50,3 +50,4 @@
   * [mongodb](./books/mongo/index.md)
 
 ## 其他
+  * [git](./books/git/index.md)
