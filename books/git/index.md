@@ -70,6 +70,39 @@ git一共有三类配置，每一类配置会覆盖上级配置（类似js中原
 `git help config`
 
 ### git基础
+> 这一部分主要学习，1）初始化仓库（repository）；2）开始、终止文件追踪（track）；3）暂存（stage）；4）提交（commit）变更。还包括，1）忽略文件；2）撤销操作；3）浏览提交历史（log）；4）不同commit差异；5）与远程仓库交互等。
+
+#### 获取仓库
+git获取仓库无外乎两种场景，1）将本地项目关联一个仓库；2）将获取一个远程仓库镜像  
+**关联仓库**  
+`git init`  
+这个命令会创建.git目录，即一个初始的版本控制系统，此时本地项目内的所有文件并未被追踪，因此需要`git add`  
+
+**克隆仓库**  
+`git clone [url]`  
+以github为例，一般包含ssh链接（ex：git@github.com:hz9527/myBooks.git）或https（ex：https://github.com/hz9527/myBooks.git）链接。  
+1. ssh git@github.com:USER_NAME/REPO_NAME.git
+2. https https://github.com/USER_NAME/REPO_NAME.git
+
+所以我们会发现克隆到本地项目目录默认根目录就是仓库名，如github默认个人主页仓库`USER_NAME.github.io`，克隆到本地根目录也是`USER_NAME.github.io`，可能不是很喜欢，所以在克隆项目时我们可以自定义这个根目录名  
+`git clone URL customName`
+
+#### 提交更新
+> 我们知道在git中文件会被分为被追踪和未被追踪两种，被追踪文件会有未修改（unmodified），已修改（modified）及已暂存（staged）
+
+
+
+#### 提交历史
+
+#### 撤销
+
+#### 远程仓库
+
+#### 打标签
+
+#### git别名
+
+
 ### git分支
 ### 远程git
 ### 分布式git
