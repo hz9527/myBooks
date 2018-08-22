@@ -17,6 +17,8 @@
     * [vuex](./books/vue/vuex.md)
   * [vue ssr](./books/vue_ssr/index.md)
   * [react](./books/react/index.md)
+  * [状态管理](./books/state/index.md)
+    * [redux](./books/state/redux.md)
 
 ## 程序设计与软件工程
   * [设计模式](./books/js_design_mode/index.md)
