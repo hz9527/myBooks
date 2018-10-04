@@ -50,6 +50,7 @@
     * [其他](./books/nodejs/other.md)  
     * [数据库处理](./books/nodejs/database.md)
   * [mongodb](./books/mongo/index.md)
+  * [node调试](./books/nodejs/debugger.md)
 
 ## 其他
   * [git](./books/git/index.md)
